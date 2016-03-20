@@ -15,6 +15,7 @@ VOLUME [ "/sys/fs/cgroup" ]
 
 # VDSM install
 RUN yum install -y http://resources.ovirt.org/pub/yum-repo/ovirt-release36.rpm
+RUN sed -i 's/pub.key/rsa.pub/' /etc/yum.repos.d/ovirt-3.6-dependencies.repo
 RUN yum -y install vdsm vdsm-cli && yum clean all;
 RUN	systemctl enable vdsmd
 
