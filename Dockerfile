@@ -21,4 +21,8 @@ RUN	systemctl enable vdsmd
 # Prefetching host deploy requirments
 RUN yum install -y tuned kexec-tools iptables-services && yum clean all
 
+ADD https://raw.githubusercontent.com/fabiand/dockerfiles/master/move-nics.sh /root/move-nics.sh
+RUN chmod +x /root/move-nics.sh
+ADD pull-nics-in.sh /root/pull-nics-in.sh
+
 CMD ["/usr/sbin/init"]
