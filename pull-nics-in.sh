@@ -1,10 +1,3 @@
 #!/bin/bash -xe
 
-tmp=$(mktemp -d -u --tmpdir=/host/tmp)
-mkdir -p $tmp
-container_tmp=${tmp#/host}
-container_id=$(chroot /host docker ps -q -f "ancestor=tlitovsk/vdsm-container" -f "status=running")
-
-cp /root/move-nics.sh $tmp/move-nics.sh
-chroot /host "/usr/bin/nsenter --net=/proc/1/ns/net --pid=/proc/1/ns/pid ./$container_tmp/move-nics.sh $container_id ens9"
-rm -rf $tmp
+chroot /host "/usr/bin/nsenter --net=/proc/1/ns/net --pid=/proc/1/ns/pid ip link set netns 1 ens9"
