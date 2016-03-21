@@ -7,11 +7,17 @@ RUN yum -y install yum-utils
 
 # Libvirt install section libvirt install
 # fix language
-RUN yum -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm  qemu-kvm-tools  && yum clean all; \
+RUN yum -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm  qemu-kvm-tools openssh-server && yum clean all; \
 	localedef -i en_US -c -f UTF-8 en_US.UTF-8 ;\
 	systemctl enable libvirtd
 VOLUME [ "/sys/fs/cgroup" ]
 # libvirt installed
+
+#sshd install
+RUN yum install -y openssh-server && yum clean all; \
+	sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config; \
+	echo 'root:tolik' | chpasswd; \
+	systemctl enable sshd
 
 # VDSM install
 RUN yum install -y http://resources.ovirt.org/pub/yum-repo/ovirt-release36.rpm
