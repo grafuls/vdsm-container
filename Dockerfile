@@ -14,10 +14,12 @@ VOLUME [ "/sys/fs/cgroup" ]
 # libvirt installed
 
 #sshd install
-RUN yum install -y openssh-server && yum clean all; \
+RUN yum install -y NetworkManager openssh-server && yum clean all; \
 	sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config; \
 	echo 'root:tolik' | chpasswd; \
+	systemctl status NetworkManager;\
 	systemctl enable sshd
+
 
 # VDSM install
 RUN yum install -y http://resources.ovirt.org/pub/yum-repo/ovirt-release36.rpm
