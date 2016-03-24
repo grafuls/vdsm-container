@@ -16,21 +16,28 @@ VOLUME [ "/sys/fs/cgroup" ]
 #sshd install
 RUN yum install -y openssh-server && yum clean all; \
 	sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config; \
-	echo 'root:tolik' | chpasswd; \
+	echo 'root:12345' | chpasswd; \
 	systemctl enable sshd
 
-#sed -i 's/SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux ;/
+RUN echo 'SELINUX=permissive' > /etc/sysconfig/selinux ;\
+	echo 'SELINUXTYPE=targeted' >> /etc/sysconfig/selinux
+
+#sed -i 's/SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux ;/virtua
 # VDSM install
 RUN yum install -y http://resources.ovirt.org/pub/yum-repo/ovirt-release36.rpm ;\
  	sed -i 's/pub.key/rsa.pub/' /etc/yum.repos.d/ovirt-3.6-dependencies.repo ;\
  	yum -y install vdsm vdsm-cli tuned kexec-tools iptables-services && yum clean all; \
-	systemctl enable vdsmd
+	sed -i 's/multipathd.service/ /' /usr/lib/systemd/system/vdsmd.service
 
-
+RUN rm -rf /etc/yum.repos.d/*
 # we need to dsable selinux
 # fixresolv .conf
 #
+
+
+
 EXPOSE 22
 EXPOSE 54231
 
 CMD ["/usr/sbin/init"]
+
